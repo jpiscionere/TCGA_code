@@ -15,10 +15,18 @@ for(i in 2:length(genes)){
 	ref=as.character(data$Reference_Allele[which(data$Hugo_Symbol==genes[i])])
 	allele1=as.character(data$Tumor_Seq_Allele1[which(data$Hugo_Symbol==genes[i])])
 	counts[i]=length(which(ref!=allele1))
-	chromosome[i]=unique(as.character(data$Chromosome[which(data$Hugo_Symbol==genes[i])]))
+	chromosome[i]=as.character(data$Chromosome[which(data$Hugo_Symbol==genes[i])])[1]
 }
 	
 
 
-chromosomes=unique(data$Chromosomes)
+f <- function(x) {
+  r <- quantile(x, probs = c(0.025, 0.1573, 0.5, 0.84, 0.975))
+  names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+  r
+}
+
+frame=data.frame(chromosome, counts, genes)
+
+p <- ggplot(frame, aes(factor(chromosome), counts)) + theme_bw() + theme(legend.position="none") + geom_boxplot(aes(fill = factor(chromosome))) + ylim(0,2) + ylab("Variant Counts") + xlab("Chromosome")
 
