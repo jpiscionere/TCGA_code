@@ -1,0 +1,24 @@
+data=read.table("kirch.maf",fill=T,head=T)
+
+
+ref=as.character(data$Reference_Allele)
+allele1=as.character(data$Tumor_Seq_Allele1)
+allele2=as.character(data$Tumor_Seq_Allele2)
+
+good_Hugo=which(ref!=allele2)
+
+genes=as.character(unique(data$Hugo[good_Hugo]))
+counts=0*c(1:length(genes))
+chromosome=counts
+
+for(i in 2:length(genes)){
+	ref=as.character(data$Reference_Allele[which(data$Hugo_Symbol==genes[i])])
+	allele1=as.character(data$Tumor_Seq_Allele1[which(data$Hugo_Symbol==genes[i])])
+	counts[i]=length(which(ref!=allele1))
+	chromosome[i]=unique(as.character(data$Chromosome[which(data$Hugo_Symbol==genes[i])]))
+}
+	
+
+
+chromosomes=unique(data$Chromosomes)
+
